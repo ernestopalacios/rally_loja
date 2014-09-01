@@ -8,6 +8,8 @@ RTC_DS1307 rtc;
 int _prev_segundo = 0;
 int _rtc_segundo = 0;
 
+Ds1307SqwPinMode salida_DS1307;
+
 void setup () {
    Serial.begin(9600);
 #ifdef AVR
@@ -25,6 +27,9 @@ void setup () {
       // January 21, 2014 at 3am you would call:
       // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
    }
+
+   salida_DS1307 = SquareWave1HZ;
+   rtc.writeSqwPinMode( salida_DS1307);
 }
 
 void loop () {
