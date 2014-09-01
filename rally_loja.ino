@@ -17,8 +17,8 @@ DMD dmd(DISPLAYS_ACROSS, DISPLAYS_DOWN);
 #define PIN_PULSO_1HZ       2
 
 ////////// VARIABLES ///////////
-    int hora=10;
-    int minuto=4;
+    int hora=11;
+    int minuto=10;
     int segundo=0;
     int bandera=0;
     int bandera2=0;
@@ -102,6 +102,16 @@ void loop(void)
 {
    boton=digitalRead( PIN_SWICTH_LARGADA );    // Lee el pin de entrada para el Switch
    
+   
+      if ( boton == 1){
+         Reloj_Largada(); 
+      }
+      else{
+         Reloj_Normal();
+         bandera_limpiar=0;
+      }
+      
+
    if( Serial.available()>0 ){       
       val[i]=Serial.read();  
       i++;
@@ -150,19 +160,7 @@ void pulso(void){
          Serial.print("\n");
       // */
 
-
-
-      /////////// CONVERSIONES DE INT A CONST CHAR ////////
-         str = String( hora );
-         str.toCharArray( hora_char, 3 );
-         
-         str = String( minuto );
-         str.toCharArray( minuto_char, 3 );
-         
-         str=String( segundo );
-         str.toCharArray( segundo_char, 3 );
-      ////////////////////////////////////////////////////
-
+      /*
       if ( boton == 1){
          Reloj_Largada(); 
       }
@@ -170,11 +168,13 @@ void pulso(void){
          Reloj_Normal();
          bandera_limpiar=0;
       }
+      */
 
 
    }
 
    // El codigo dentro del Else se ejecuta a la mitad del segundo a dibujar
+   // Se carga el siguiente segundo antes de que este se dibuje.
    else{    
 
       segundo++;
@@ -192,6 +192,17 @@ void pulso(void){
             }
          }
       }
+
+      /////////// CONVERSIONES DE INT A CONST CHAR ////////
+         str = String( hora );
+         str.toCharArray( hora_char, 3 );
+         
+         str = String( minuto );
+         str.toCharArray( minuto_char, 3 );
+         
+         str=String( segundo );
+         str.toCharArray( segundo_char, 3 );
+      ////////////////////////////////////////////////////
       
    }
 }   
@@ -199,25 +210,23 @@ void pulso(void){
 
 void Reloj_Normal (void){
    
-   static int _prev_hora;
-   static int _prev_minuto;
-   static int bandera_clear;
-
    
    //  Borra los numeros para que no se queden leds encendidos
-      if( (segundo - 1) % 10 == 0 || segundo == 10 )
-      {
-         dmd.clearScreen(true);
-         bandera_clear = 1;
-      }
-      else
-         bandera_clear = 0;
+   if ((segundo==1 || segundo==21 || segundo==31 || segundo==41 || segundo==51 || segundo==10) && bandera2==0){
+     dmd.clearScreen(true);
+     bandera2=1;
+   }
+   else if(segundo==11 && bandera2==1){
+      dmd.clearScreen(true);
+      bandera2=0; 
+   }
+   else if(segundo!=1 && segundo!=11 && segundo!=21 && segundo!=31 && segundo!=41 && segundo!=51 && segundo!=10 && bandera2==1){
+     bandera2=0; 
+   }
       
       
       
-   // Vuelve a dibujar la Hora solo si es necesario
-   if( _prev_hora != hora || bandera_clear ){
-
+   // Dibuja la Hora solo si es necesario
       if ( hora < 10){
          dmd.drawString(  0, 1 ,"0", 1, GRAPHICS_NORMAL );
          dmd.drawString(  9, 1 , hora_char, 2, GRAPHICS_NORMAL );
@@ -229,13 +238,9 @@ void Reloj_Normal (void){
       dmd.drawBox( 19,9 , 20, 10, GRAPHICS_NORMAL );
       dmd.drawBox( 19,5 , 20, 6, GRAPHICS_NORMAL );
 
-      _prev_hora = hora;
-   }      
-   
+    
    
    // Vuelve a dibujar el minuto solo si es necesario
-   if( _prev_minuto != minuto || bandera_clear ){
-       
       if ( minuto < 10){
          dmd.drawString( 22, 1 ,"0", 1, GRAPHICS_NORMAL );
          dmd.drawString( 31, 1 ,minuto_char, 2, GRAPHICS_NORMAL );          
@@ -247,10 +252,7 @@ void Reloj_Normal (void){
       dmd.drawBox( 42,9 , 43, 10, GRAPHICS_NORMAL );
       dmd.drawBox( 42,5 , 43, 6, GRAPHICS_NORMAL );
 
-      _prev_minuto = minuto;
    
-   }
-  
    // Siempre Dibuja el segundo
    if( segundo < 10){
       dmd.drawString(  45, 1 ,"0", 1, GRAPHICS_NORMAL );
