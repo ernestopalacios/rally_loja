@@ -30,9 +30,6 @@ void setup () {
 void loop () {
    
    DateTime now = rtc.now();
-   _rtc_segundo = now.second();
-
-   if( _prev_segundo != _rtc_segundo ){
         
       Serial.print(now.year(), DEC);
       Serial.print('/');
@@ -47,8 +44,5 @@ void loop () {
       Serial.print(now.second(), DEC);
       Serial.println();
     
-      _prev_segundo = _rtc_segundo;
-   }
-    
-   delay(300);
+   delay(5000);
 }
