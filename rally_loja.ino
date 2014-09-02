@@ -1,3 +1,5 @@
+// Version 0.9   Falta que guarde el reloj en el RTC.
+
 #include <SPI.h>        //SPI.h must be included as DMD is written by SPI (the IDE complains otherwise)
 #include <DMD.h>        //
 #include <TimerOne.h>   //
@@ -42,6 +44,7 @@ DMD dmd(DISPLAYS_ACROSS, DISPLAYS_DOWN);
     char val[200];
 //////////////////////////////
 
+   int _prev_seg = 0;
 
 // Definición de Funciones Su implementacion se sencutra al final del codigo
 void Reloj_Normal (void);
@@ -100,25 +103,18 @@ void setup(void)
    
 void loop(void)
 {
+   
    boton=digitalRead( PIN_SWICTH_LARGADA );    // Lee el pin de entrada para el Switch
    
-   
-      if ( boton == 1){
-         Reloj_Largada(); 
-      }
-      else{
-         Reloj_Normal();
-         bandera_limpiar=0;
-      }
-      
-
-   if( Serial.available()>0 ){       
+  
+   if( Serial.available() ){       
       val[i]=Serial.read();  
       i++;
+
+      if( i > 200 )
+         i = 0;
    }
-   else{
-     i=0;
-   }
+   
    
    ////////// IGUALAR EL RELOJ AL GPS /////////////////
    if ( val[ 49 ] == 'A')
@@ -135,6 +131,7 @@ void loop(void)
       
       buffer_segundo = (int)( val[43] );
       segundo = ( (buffer_segundo - 48) * 10 + ( (int)(val[44]) - 48) );
+      segundo--;
        
 
       for (j=0;j<200;j++){
@@ -151,32 +148,6 @@ void pulso(void){
    if( digitalRead(PIN_PULSO_1HZ) )
    {
        
-      /* Modo de Prueba Serial: [OK] /
-         Serial.print( hora, DEC);
-         Serial.print( ":");
-         Serial.print( minuto, DEC);
-         Serial.print( ":");
-         Serial.print( segundo, DEC);
-         Serial.print("\n");
-      // */
-
-      /*
-      if ( boton == 1){
-         Reloj_Largada(); 
-      }
-      else{
-         Reloj_Normal();
-         bandera_limpiar=0;
-      }
-      */
-
-
-   }
-
-   // El codigo dentro del Else se ejecuta a la mitad del segundo a dibujar
-   // Se carga el siguiente segundo antes de que este se dibuje.
-   else{    
-
       segundo++;
 
       if( segundo > 59){
@@ -193,6 +164,7 @@ void pulso(void){
          }
       }
 
+
       /////////// CONVERSIONES DE INT A CONST CHAR ////////
          str = String( hora );
          str.toCharArray( hora_char, 3 );
@@ -203,6 +175,34 @@ void pulso(void){
          str=String( segundo );
          str.toCharArray( segundo_char, 3 );
       ////////////////////////////////////////////////////
+      if ( boton == 1){
+         Reloj_Largada(); 
+      }
+      else{
+         Reloj_Normal();
+         bandera_limpiar=0;
+      }
+
+
+      /* Modo de Prueba Serial: [OK] /
+         Serial.print( hora, DEC);
+         Serial.print( ":");
+         Serial.print( minuto, DEC);
+         Serial.print( ":");
+         Serial.print( segundo, DEC);
+         Serial.print("\n");
+      
+      // */
+
+      
+   }
+
+   // El codigo dentro del Else se ejecuta a la mitad del segundo a dibujar
+   // Se carga el siguiente segundo antes de que este se dibuje.
+   else{    
+
+      
+     
       
    }
 }   
@@ -224,33 +224,30 @@ void Reloj_Normal (void){
      bandera2=0; 
    }
       
-      
-      
-   // Dibuja la Hora solo si es necesario
-      if ( hora < 10){
-         dmd.drawString(  0, 1 ,"0", 1, GRAPHICS_NORMAL );
-         dmd.drawString(  9, 1 , hora_char, 2, GRAPHICS_NORMAL );
-      }
-      else{
-         dmd.drawString(  0, 1 , hora_char, 2, GRAPHICS_NORMAL );
-      }
-      
-      dmd.drawBox( 19,9 , 20, 10, GRAPHICS_NORMAL );
-      dmd.drawBox( 19,5 , 20, 6, GRAPHICS_NORMAL );
+
+   if ( hora < 10){
+      dmd.drawString(  0, 1 ,"0", 1, GRAPHICS_NORMAL );
+      dmd.drawString(  9, 1 , hora_char, 2, GRAPHICS_NORMAL );
+   }
+   else{
+      dmd.drawString(  0, 1 , hora_char, 2, GRAPHICS_NORMAL );
+   }
+   
+   dmd.drawBox( 19,9 , 20, 10, GRAPHICS_NORMAL );
+   dmd.drawBox( 19,5 , 20, 6, GRAPHICS_NORMAL );
 
     
    
-   // Vuelve a dibujar el minuto solo si es necesario
-      if ( minuto < 10){
-         dmd.drawString( 22, 1 ,"0", 1, GRAPHICS_NORMAL );
-         dmd.drawString( 31, 1 ,minuto_char, 2, GRAPHICS_NORMAL );          
-      }
-      else{
-         dmd.drawString( 22, 1 , minuto_char, 2, GRAPHICS_NORMAL );
-      }
-      
-      dmd.drawBox( 42,9 , 43, 10, GRAPHICS_NORMAL );
-      dmd.drawBox( 42,5 , 43, 6, GRAPHICS_NORMAL );
+   if ( minuto < 10){
+      dmd.drawString( 22, 1 ,"0", 1, GRAPHICS_NORMAL );
+      dmd.drawString( 31, 1 ,minuto_char, 2, GRAPHICS_NORMAL );          
+   }
+   else{
+      dmd.drawString( 22, 1 , minuto_char, 2, GRAPHICS_NORMAL );
+   }
+   
+   dmd.drawBox( 42,9 , 43, 10, GRAPHICS_NORMAL );
+   dmd.drawBox( 42,5 , 43, 6, GRAPHICS_NORMAL );
 
    
    // Siempre Dibuja el segundo
