@@ -8,6 +8,14 @@
 #include "Arial_black_16.h"
 #include "Arial14.h"
 
+// Para trabajar con el RTC
+#include <Wire.h>
+#include "RTClib.h"
+
+RTC_DS1307 rtc;       // Crea el objeto para RTC
+Ds1307SqwPinMode mode;
+
+
 //Fire up the DMD library as dmd
 #define DISPLAYS_ACROSS 2
 #define DISPLAYS_DOWN 1
@@ -68,13 +76,16 @@ void ScanDMD()
 --------------------------------------------------------------------------------------*/
 void setup(void)
 {
+   DateTime now;     // Objeto donde guardarla hora
    
    pinMode(PIN_SWICTH_LARGADA, INPUT);      // Pin entrada Switch
    pinMode(PIN_PULSO_1HZ, INPUT);      // Pin entrada Switch
    Serial.begin(9600);                     // Comunicación serial con SkyPatrol
    
    // Presentacion
-   Serial.print("HOLA MUNDO! \n");
+   Serial.print("RALLY LOJA 2014 \n");
+   Serial.print("www.kradac.com \n");
+   Serial.print("Version 0.9.1 \n");
    interrupts();                             // Habilita las interrupciones
    
    //initialize TimerOne's interrupt/CPU usage used to scan and refresh the display
@@ -86,10 +97,50 @@ void setup(void)
    //clear/init the DMD pixels held in RAM
    dmd.clearScreen( true );   //true is normal (all pixels off), false is negative (all pixels on)
 
+
+   //***              INICIALIZACION DEL RTC            ***//
+   Wire.begin();
+   rtc.begin();
+   delayMicroseconds(500);
+
+   mode = SquareWave1HZ;
+   rtc.writeSqwPinMode(mode);
+
+   if (! rtc.isrunning() ) 
+   {
+      Serial.println("RTC is NOT running!");
+      // following line sets the RTC to the date & time this sketch was compiled
+      rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+      // This line sets the RTC with an explicit date & time, for example to set
+      // January 21, 2014 at 3am you would call:
+      // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+   }
+
+   now = rtc.now();
+
+   Serial.print(now.year(), DEC);
+   Serial.print('/');
+   Serial.print(now.month(), DEC);
+   Serial.print('/');
+   Serial.print(now.day(), DEC);
+   Serial.print(' ');
+   Serial.print(now.hour(), DEC);
+   Serial.print(':');
+   Serial.print(now.minute(), DEC);
+   Serial.print(':');
+   Serial.print(now.second(), DEC);
+   Serial.println();
+
+   hora = now.hour();
+   minuto = now.minute();
+   segundo = now.second();
+
+
    // INTERRUPCION CADA SEGUNDO
    // El chip DS1307 dara un flanco positivo cada segundo exacto. Se usa este disparo para aumentar
    // la variable segundos y dibujar el tiempo en el dispolay.
    attachInterrupt(0, pulso, CHANGE); 
+
    
 }
 
