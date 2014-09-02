@@ -52,7 +52,8 @@ DMD dmd(DISPLAYS_ACROSS, DISPLAYS_DOWN);
     char val[200];
 //////////////////////////////
 
-   int _prev_seg = 0;
+   int bandera_IGUALAR_GPS = 0;
+   int bandera_IGUALAR_RTC = 0;
 
 // Definición de Funciones Su implementacion se sencutra al final del codigo
 void Reloj_Normal (void);
@@ -89,7 +90,7 @@ void setup(void)
    interrupts();                             // Habilita las interrupciones
    
    //initialize TimerOne's interrupt/CPU usage used to scan and refresh the display
-   Timer1.initialize( 5250 );            //period in microseconds to call ScanDMD. Anything longer than 5000 (5ms) and you can see flicker.
+   Timer1.initialize( 5000 );            //period in microseconds to call ScanDMD. Anything longer than 5000 (5ms) and you can see flicker.
    Timer1.attachInterrupt( ScanDMD );   //attach the Timer1 interrupt to ScanDMD which goes to dmd.scanDisplayBySPI()
    dmd.selectFont(Arial_Black_16);     // Mover al void_setup()
 
@@ -104,6 +105,8 @@ void setup(void)
    delayMicroseconds(500);
 
    mode = SquareWave1HZ;
+   delayMicroseconds(500);
+
    rtc.writeSqwPinMode(mode);
 
    if (! rtc.isrunning() ) 
@@ -139,7 +142,7 @@ void setup(void)
    // INTERRUPCION CADA SEGUNDO
    // El chip DS1307 dara un flanco positivo cada segundo exacto. Se usa este disparo para aumentar
    // la variable segundos y dibujar el tiempo en el dispolay.
-   attachInterrupt(0, pulso, CHANGE); 
+   //attachInterrupt(0, pulso, CHANGE); 
 
    
 }
@@ -157,6 +160,16 @@ void loop(void)
    
    boton=digitalRead( PIN_SWICTH_LARGADA );    // Lee el pin de entrada para el Switch
    
+   /*                    */
+   if( bandera_IGUALAR_GPS == 1 && bandera_IGUALAR_RTC == 0)
+   {
+       
+      rtc.adjust( DateTime( 2014,9,2,hora,minuto,segundo  ) );
+      bandera_IGUALAR_RTC = 1;
+
+   }
+
+   // */
   
    if( Serial.available() ){       
       val[i]=Serial.read();  
@@ -168,7 +181,7 @@ void loop(void)
    
    
    ////////// IGUALAR EL RELOJ AL GPS /////////////////
-   if ( val[ 49 ] == 'A')
+   if ( val[ 49 ] == 'A' && bandera_IGUALAR_GPS == 0)
    {   
       buffer_hora = (int)( val[39] );
       
@@ -183,7 +196,15 @@ void loop(void)
       buffer_segundo = (int)( val[43] );
       segundo = ( (buffer_segundo - 48) * 10 + ( (int)(val[44]) - 48) );
       segundo--;
-       
+      
+      
+
+      // INTERRUPCION CADA SEGUNDO
+      // El chip DS1307 dara un flanco positivo cada segundo exacto. Se usa este disparo para aumentar
+      // la variable segundos y dibujar el tiempo en el dispolay.
+      attachInterrupt(0, pulso, CHANGE); 
+
+      bandera_IGUALAR_GPS = 1;
 
       for (j=0;j<200;j++){
         val[j]=0;
