@@ -7,10 +7,13 @@
 #include "SystemFont5x7.h"
 #include "Arial_black_16.h"
 #include "Arial14.h"
+#include "EEPROM.h"
+
 
 // Para trabajar con el RTC
 #include <Wire.h>
 #include "RTClib.h"
+
 
 RTC_DS1307 rtc;       // Crea el objeto para RTC
 Ds1307SqwPinMode mode;
@@ -21,6 +24,8 @@ Ds1307SqwPinMode mode;
 #define DISPLAYS_DOWN 1
 DMD dmd(DISPLAYS_ACROSS, DISPLAYS_DOWN);
 
+// Memoria EEPROM para saber si se ha igualado desde el GPS
+#define MEM_ADRESS    0x1F
 
 // DEFINICION DE PINES
 #define PIN_SWICTH_LARGADA  4
@@ -84,15 +89,15 @@ void setup(void)
    Serial.begin(9600);                     // Comunicación serial con SkyPatrol
    
    // Presentacion
-   Serial.print("RALLY LOJA 2014 \n");
+   Serial.print("***   RALLY LOJA 2014   ***\n");
    Serial.print("www.kradac.com \n");
-   Serial.print("Version 0.9.1 \n");
+   Serial.print("Version 1.0.1 \n");
    interrupts();                             // Habilita las interrupciones
    
    //initialize TimerOne's interrupt/CPU usage used to scan and refresh the display
-   Timer1.initialize( 5000 );            //period in microseconds to call ScanDMD. Anything longer than 5000 (5ms) and you can see flicker.
+   Timer1.initialize( 5250 );            //period in microseconds to call ScanDMD. Anything longer than 5000 (5ms) and you can see flicker.
    Timer1.attachInterrupt( ScanDMD );   //attach the Timer1 interrupt to ScanDMD which goes to dmd.scanDisplayBySPI()
-   dmd.selectFont(Arial_Black_16);     // Mover al void_setup()
+   dmd.selectFont(Arial_Black_16);     //Tipo de letra
 
 
    //clear/init the DMD pixels held in RAM
@@ -103,48 +108,54 @@ void setup(void)
    Wire.begin();
    rtc.begin();
    delayMicroseconds(500);
-
    mode = SquareWave1HZ;
-   delayMicroseconds(500);
-
    rtc.writeSqwPinMode(mode);
 
    if (! rtc.isrunning() ) 
    {
-      Serial.println("RTC is NOT running!");
+      Serial.println("EL RTC no esta Igual!!!");
       // following line sets the RTC to the date & time this sketch was compiled
+      
       rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-      // This line sets the RTC with an explicit date & time, for example to set
-      // January 21, 2014 at 3am you would call:
-      // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+      EEPROM.write( MEM_ADRESS, 0x00 );  // Se debe volver a igualar
+
    }
 
+   if( EEPROM.read( MEM_ADRESS ) ){
+
+      Serial.println("EL RTC Esta igual");
+       
+   }else{
+
+      Serial.println("Se espera trama del GPS");
+      dmd.drawString(0, 1, "SIN GPS",7,GRAPHICS_NORMAL);
+
+   }
+   
+   // Iguala la hora desde el RTC
    now = rtc.now();
-
-   Serial.print(now.year(), DEC);
-   Serial.print('/');
-   Serial.print(now.month(), DEC);
-   Serial.print('/');
-   Serial.print(now.day(), DEC);
-   Serial.print(' ');
-   Serial.print(now.hour(), DEC);
-   Serial.print(':');
-   Serial.print(now.minute(), DEC);
-   Serial.print(':');
-   Serial.print(now.second(), DEC);
-   Serial.println();
-
+   
    hora = now.hour();
    minuto = now.minute();
    segundo = now.second();
-
-
-   // INTERRUPCION CADA SEGUNDO
-   // El chip DS1307 dara un flanco positivo cada segundo exacto. Se usa este disparo para aumentar
-   // la variable segundos y dibujar el tiempo en el dispolay.
-   //attachInterrupt(0, pulso, CHANGE); 
-
+   segundo+=2;
    
+
+   // En esta posicion de memoria se graba cuando se iguala la hora desde el 
+   // GPS.
+   if( EEPROM.read( MEM_ADRESS) )
+   {
+
+      // INTERRUPCION CADA SEGUNDO
+      // El chip DS1307 dara un flanco positivo cada segundo exacto. 
+      // Se usa este disparo para aumentar
+      attachInterrupt(0, pulso, CHANGE); 
+   
+   }
+
+   bandera_IGUALAR_GPS = 0;
+   bandera_IGUALAR_RTC = 0;
+
 }
 
 
@@ -158,31 +169,49 @@ void setup(void)
 void loop(void)
 {
    
-   boton=digitalRead( PIN_SWICTH_LARGADA );    // Lee el pin de entrada para el Switch
+   boton = digitalRead( PIN_SWICTH_LARGADA );    // Lee el pin de entrada para el Switch
    
+   
+   // GRABA LA HORA EN EL RTC
    /*                    */
    if( bandera_IGUALAR_GPS == 1 && bandera_IGUALAR_RTC == 0)
    {
        
       rtc.adjust( DateTime( 2014,9,2,hora,minuto,segundo  ) );
-      bandera_IGUALAR_RTC = 1;
+      EEPROM.write( MEM_ADRESS, 0x01 );
 
+      // Iguala del GPS UNA SOLA VEZ CADA VEZ QUE SE ENCIENDE
+      bandera_IGUALAR_RTC = 1;
    }
 
    // */
-  
+   // Verifica si hay BYTES en el puerto serial y los gurda en el 
+   // buffer de validacion
    if( Serial.available() ){       
       val[i]=Serial.read();  
       i++;
 
-      if( i > 200 )
+      // Ignorar si se desborda el buffer
+      if( i > 200 ){
+
+         for (j=0;j<200;j++)
+            val[j]=0;
          i = 0;
+      }
+      
    }
    
+  
    
-   ////////// IGUALAR EL RELOJ AL GPS /////////////////
-   if ( val[ 49 ] == 'A' && bandera_IGUALAR_GPS == 0)
+   ////////////////////////     IGUALAR EL RELOJ AL GPS    /////////////////
+   ///
+   /// Se iguala del GPS una vez cada vez que se enciende el Arduino
+   /// 
+   ///   FALTA MEJORAR LA FUNCION QUE ANALIZA LA TRAMA DE SKYPATROL !!!
+   /// 
+   if ( val[ 49 ] == 'A' && bandera_IGUALAR_GPS == 0 )
    {   
+      
       buffer_hora = (int)( val[39] );
       
       hora = ( (buffer_hora - 48) * 10 + ( (int)(val[40] ) - 48)) - 5;
@@ -198,17 +227,14 @@ void loop(void)
       segundo--;
       
       
-
-      // INTERRUPCION CADA SEGUNDO
-      // El chip DS1307 dara un flanco positivo cada segundo exacto. Se usa este disparo para aumentar
-      // la variable segundos y dibujar el tiempo en el dispolay.
-      attachInterrupt(0, pulso, CHANGE); 
-
       bandera_IGUALAR_GPS = 1;
+      Serial.println("SE OBTUVO TRAMA GPS !!!");
 
-      for (j=0;j<200;j++){
+
+      // Limpia el Buffer 
+      for (j=0;j<200;j++)
         val[j]=0;
-      }     
+           
    }
 }
 
