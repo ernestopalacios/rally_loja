@@ -142,7 +142,7 @@ void setup(void)
    // INTERRUPCION CADA SEGUNDO
    // El chip DS1307 dara un flanco positivo cada segundo exacto. Se usa este disparo para aumentar
    // la variable segundos y dibujar el tiempo en el dispolay.
-   //attachInterrupt(0, pulso, CHANGE); 
+   attachInterrupt(0, pulso, CHANGE); 
 
    
 }
@@ -160,7 +160,7 @@ void loop(void)
    
    boton=digitalRead( PIN_SWICTH_LARGADA );    // Lee el pin de entrada para el Switch
    
-   /*                    */
+   /*                    /
    if( bandera_IGUALAR_GPS == 1 && bandera_IGUALAR_RTC == 0)
    {
        
