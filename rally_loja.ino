@@ -86,7 +86,7 @@ void setup(void)
    // Presentacion
    Serial.print("RALLY LOJA 2014 \n");
    Serial.print("www.kradac.com \n");
-   Serial.print("Version 0.9.1 \n");
+   Serial.print("Version 1.0.0 \n");
    interrupts();                             // Habilita las interrupciones
    
    //initialize TimerOne's interrupt/CPU usage used to scan and refresh the display
