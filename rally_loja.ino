@@ -83,6 +83,8 @@ void ScanDMD()
 void setup(void)
 {
    DateTime now;     // Objeto donde guardarla hora
+
+   //EEPROM.write( MEM_ADRESS,0x00);
    
    pinMode(PIN_SWICTH_LARGADA, INPUT);      // Pin entrada Switch
    pinMode(PIN_PULSO_1HZ, INPUT);      // Pin entrada Switch
@@ -95,7 +97,7 @@ void setup(void)
    interrupts();                             // Habilita las interrupciones
    
    //initialize TimerOne's interrupt/CPU usage used to scan and refresh the display
-   Timer1.initialize( 5250 );            //period in microseconds to call ScanDMD. Anything longer than 5000 (5ms) and you can see flicker.
+   Timer1.initialize( 4250 );            //period in microseconds to call ScanDMD. Anything longer than 5000 (5ms) and you can see flicker.
    Timer1.attachInterrupt( ScanDMD );   //attach the Timer1 interrupt to ScanDMD which goes to dmd.scanDisplayBySPI()
    dmd.selectFont(Arial_Black_16);     //Tipo de letra
 
@@ -110,6 +112,7 @@ void setup(void)
    delayMicroseconds(500);
    mode = SquareWave1HZ;
    rtc.writeSqwPinMode(mode);
+
 
    if (! rtc.isrunning() ) 
    {
@@ -138,8 +141,8 @@ void setup(void)
    hora = now.hour();
    minuto = now.minute();
    segundo = now.second();
-   segundo+=2;
-   
+   //segundo+=2;
+   //attachInterrupt(0, pulso, CHANGE); 
 
    // En esta posicion de memoria se graba cuando se iguala la hora desde el 
    // GPS.
@@ -168,6 +171,7 @@ void setup(void)
    
 void loop(void)
 {
+   DateTime ultimoRTC;
    
    boton = digitalRead( PIN_SWICTH_LARGADA );    // Lee el pin de entrada para el Switch
    
@@ -179,9 +183,24 @@ void loop(void)
        
       rtc.adjust( DateTime( 2014,9,2,hora,minuto,segundo  ) );
       EEPROM.write( MEM_ADRESS, 0x01 );
+      attachInterrupt(0, pulso, CHANGE); 
+      bandera_IGUALAR_RTC = EEPROM.read( MEM_ADRESS );
+
+      ultimoRTC = rtc.now();
+
+      Serial.print("HORA DEL RTC = ");
+      Serial.println(bandera_IGUALAR_RTC,DEC);
+      Serial.print(ultimoRTC.hour(), DEC);
+      Serial.print(':');
+      Serial.print(ultimoRTC.minute(), DEC);
+      Serial.print(':');
+      Serial.print(ultimoRTC.second(), DEC);
+      Serial.println();
+
+      attachInterrupt(0, pulso, CHANGE); 
 
       // Iguala del GPS UNA SOLA VEZ CADA VEZ QUE SE ENCIENDE
-      bandera_IGUALAR_RTC = 1;
+
    }
 
    // */
@@ -209,7 +228,7 @@ void loop(void)
    /// 
    ///   FALTA MEJORAR LA FUNCION QUE ANALIZA LA TRAMA DE SKYPATROL !!!
    /// 
-   if ( val[ 49 ] == 'A' && bandera_IGUALAR_GPS == 0 )
+   if ( val[ 49 ] == 'A' )
    {   
       
       buffer_hora = (int)( val[39] );
@@ -229,7 +248,7 @@ void loop(void)
       
       bandera_IGUALAR_GPS = 1;
       Serial.println("SE OBTUVO TRAMA GPS !!!");
-
+      EEPROM.write( MEM_ADRESS, 0x01 );
 
       // Limpia el Buffer 
       for (j=0;j<200;j++)
@@ -369,34 +388,88 @@ void Reloj_Largada(void){
    if( segundo < 50 && segundo > 0){
      Reloj_Normal();
    }
-   
-   else if( segundo <= 55 && segundo > 0){
-    if ( bandera_limpiar == 0 ){
-      dmd.clearScreen( true );
-      bandera_limpiar=1;
-    } 
-    
-    dmd.drawCircle( 4, 8, 3, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 3, 6, 5,10, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 2, 7, 6,9, GRAPHICS_NORMAL );
-    
-    dmd.drawCircle( 13, 8, 3, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 12, 6, 14,10, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 11, 7, 15,9, GRAPHICS_NORMAL );
-    
-    dmd.drawCircle( 22, 8, 3, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 21, 6, 23,10, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 20, 7, 24,9, GRAPHICS_NORMAL );
 
-    dmd.drawCircle( 31, 8, 3, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 30, 6, 32,10, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 29, 7, 33,9, GRAPHICS_NORMAL );
-    
-    dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 39, 6, 41,10, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 38, 7, 42,9, GRAPHICS_NORMAL );
-    
-    dmd.drawString(  47, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
+   else if( segundo == 50 )
+   {
+      dmd.clearScreen( true );
+      dmd.drawCircle( 4, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 3, 6, 5,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 2, 7, 6,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 13, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 12, 6, 14,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 11, 7, 15,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 22, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 21, 6, 23,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 20, 7, 24,9, GRAPHICS_NORMAL );
+
+      dmd.drawCircle( 31, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 30, 6, 32,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 29, 7, 33,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 39, 6, 41,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 38, 7, 42,9, GRAPHICS_NORMAL );
+
+       dmd.drawString(  47, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
+   }
+
+   else if( segundo == 51 )
+   {
+      dmd.clearScreen( true );
+      dmd.drawCircle( 4, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 3, 6, 5,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 2, 7, 6,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 13, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 12, 6, 14,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 11, 7, 15,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 22, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 21, 6, 23,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 20, 7, 24,9, GRAPHICS_NORMAL );
+
+      dmd.drawCircle( 31, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 30, 6, 32,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 29, 7, 33,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 39, 6, 41,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 38, 7, 42,9, GRAPHICS_NORMAL );
+
+       dmd.drawString(  55, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
+   }
+   
+   else if( segundo <= 55 && segundo > 0)
+   {
+      if ( bandera_limpiar == 0 )
+      {
+         dmd.clearScreen( true );
+         bandera_limpiar=1;
+      } 
+      
+      dmd.drawCircle( 4, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 3, 6, 5,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 2, 7, 6,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 13, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 12, 6, 14,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 11, 7, 15,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 22, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 21, 6, 23,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 20, 7, 24,9, GRAPHICS_NORMAL );
+
+      dmd.drawCircle( 31, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 30, 6, 32,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 29, 7, 33,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 39, 6, 41,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 38, 7, 42,9, GRAPHICS_NORMAL );
+      
+      dmd.drawString(  55, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
    }
 
    else if ( segundo == 56){
@@ -415,7 +488,7 @@ void Reloj_Largada(void){
       dmd.drawCircle( 31, 8, 3, GRAPHICS_NORMAL );
       dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
       
-      dmd.drawString(  47, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
+      dmd.drawString(  55, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
    }
    
    else if (segundo==57){
@@ -433,7 +506,7 @@ void Reloj_Largada(void){
       dmd.drawCircle( 31, 8, 3, GRAPHICS_NORMAL );
       dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
      
-      dmd.drawString(  47, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
+      dmd.drawString(  55, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
    }
 
    else if (segundo==58){
@@ -453,25 +526,18 @@ void Reloj_Largada(void){
       dmd.drawCircle( 31, 8, 3, GRAPHICS_NORMAL );
       dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
      
-      dmd.drawString(  47, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
+      dmd.drawString(  55, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
    }
    
    else if (segundo==59){
-      if (bandera_limpiar==0){
-         dmd.clearScreen( true );
-         bandera_limpiar=1;
-      } 
-      dmd.drawCircle( 4, 8, 3, GRAPHICS_INVERSE );
-      dmd.drawCircle( 13, 8, 3, GRAPHICS_INVERSE );
-      dmd.drawCircle( 22, 8, 3, GRAPHICS_INVERSE );
-      dmd.drawCircle( 31, 8, 3, GRAPHICS_INVERSE );
-      dmd.drawFilledBox( 30, 6, 32,10, GRAPHICS_INVERSE );
-      dmd.drawFilledBox( 29, 7, 33,9, GRAPHICS_INVERSE );
       
+      dmd.clearScreen( true );
+
       dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
-      dmd.drawLine( 54, 0, 54, 16,GRAPHICS_INVERSE );
+      dmd.drawFilledBox( 39, 6, 41,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 38, 7, 42,9, GRAPHICS_NORMAL );
       
-      dmd.drawString(  47, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
+      dmd.drawString(  57, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
    }
 
    else if (segundo==0){
