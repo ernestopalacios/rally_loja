@@ -197,6 +197,8 @@ void loop(void)
       segundo = ( (buffer_segundo - 48) * 10 + ( (int)(val[44]) - 48) );
       segundo--;
       
+      Serial.print("SE OBTUVO TRAMA GPS!!! \n");
+   
       
 
       // INTERRUPCION CADA SEGUNDO
@@ -343,34 +345,88 @@ void Reloj_Largada(void){
    if( segundo < 50 && segundo > 0){
      Reloj_Normal();
    }
-   
-   else if( segundo <= 55 && segundo > 0){
-    if ( bandera_limpiar == 0 ){
-      dmd.clearScreen( true );
-      bandera_limpiar=1;
-    } 
-    
-    dmd.drawCircle( 4, 8, 3, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 3, 6, 5,10, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 2, 7, 6,9, GRAPHICS_NORMAL );
-    
-    dmd.drawCircle( 13, 8, 3, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 12, 6, 14,10, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 11, 7, 15,9, GRAPHICS_NORMAL );
-    
-    dmd.drawCircle( 22, 8, 3, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 21, 6, 23,10, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 20, 7, 24,9, GRAPHICS_NORMAL );
 
-    dmd.drawCircle( 31, 8, 3, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 30, 6, 32,10, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 29, 7, 33,9, GRAPHICS_NORMAL );
-    
-    dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 39, 6, 41,10, GRAPHICS_NORMAL );
-    dmd.drawFilledBox( 38, 7, 42,9, GRAPHICS_NORMAL );
-    
-    dmd.drawString(  47, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
+   else if( segundo == 50 )
+   {
+      dmd.clearScreen( true );
+      dmd.drawCircle( 4, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 3, 6, 5,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 2, 7, 6,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 13, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 12, 6, 14,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 11, 7, 15,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 22, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 21, 6, 23,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 20, 7, 24,9, GRAPHICS_NORMAL );
+
+      dmd.drawCircle( 31, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 30, 6, 32,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 29, 7, 33,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 39, 6, 41,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 38, 7, 42,9, GRAPHICS_NORMAL );
+
+       dmd.drawString(  47, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
+   }
+
+   else if( segundo == 51 )
+   {
+      dmd.clearScreen( true );
+      dmd.drawCircle( 4, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 3, 6, 5,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 2, 7, 6,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 13, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 12, 6, 14,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 11, 7, 15,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 22, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 21, 6, 23,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 20, 7, 24,9, GRAPHICS_NORMAL );
+
+      dmd.drawCircle( 31, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 30, 6, 32,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 29, 7, 33,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 39, 6, 41,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 38, 7, 42,9, GRAPHICS_NORMAL );
+
+       dmd.drawString(  55, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
+   }
+   
+   else if( segundo <= 55 && segundo > 0)
+   {
+      if ( bandera_limpiar == 0 )
+      {
+         dmd.clearScreen( true );
+         bandera_limpiar=1;
+      } 
+      
+      dmd.drawCircle( 4, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 3, 6, 5,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 2, 7, 6,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 13, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 12, 6, 14,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 11, 7, 15,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 22, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 21, 6, 23,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 20, 7, 24,9, GRAPHICS_NORMAL );
+
+      dmd.drawCircle( 31, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 30, 6, 32,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 29, 7, 33,9, GRAPHICS_NORMAL );
+      
+      dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 39, 6, 41,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 38, 7, 42,9, GRAPHICS_NORMAL );
+      
+      dmd.drawString(  55, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
    }
 
    else if ( segundo == 56){
@@ -389,7 +445,7 @@ void Reloj_Largada(void){
       dmd.drawCircle( 31, 8, 3, GRAPHICS_NORMAL );
       dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
       
-      dmd.drawString(  47, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
+      dmd.drawString(  55, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
    }
    
    else if (segundo==57){
@@ -407,7 +463,7 @@ void Reloj_Largada(void){
       dmd.drawCircle( 31, 8, 3, GRAPHICS_NORMAL );
       dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
      
-      dmd.drawString(  47, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
+      dmd.drawString(  55, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
    }
 
    else if (segundo==58){
@@ -427,25 +483,18 @@ void Reloj_Largada(void){
       dmd.drawCircle( 31, 8, 3, GRAPHICS_NORMAL );
       dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
      
-      dmd.drawString(  47, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
+      dmd.drawString(  55, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
    }
    
    else if (segundo==59){
-      if (bandera_limpiar==0){
-         dmd.clearScreen( true );
-         bandera_limpiar=1;
-      } 
-      dmd.drawCircle( 4, 8, 3, GRAPHICS_INVERSE );
-      dmd.drawCircle( 13, 8, 3, GRAPHICS_INVERSE );
-      dmd.drawCircle( 22, 8, 3, GRAPHICS_INVERSE );
-      dmd.drawCircle( 31, 8, 3, GRAPHICS_INVERSE );
-      dmd.drawFilledBox( 30, 6, 32,10, GRAPHICS_INVERSE );
-      dmd.drawFilledBox( 29, 7, 33,9, GRAPHICS_INVERSE );
       
+      dmd.clearScreen( true );
+
       dmd.drawCircle( 40, 8, 3, GRAPHICS_NORMAL );
-      dmd.drawLine( 54, 0, 54, 16,GRAPHICS_INVERSE );
+      dmd.drawFilledBox( 39, 6, 41,10, GRAPHICS_NORMAL );
+      dmd.drawFilledBox( 38, 7, 42,9, GRAPHICS_NORMAL );
       
-      dmd.drawString(  47, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
+      dmd.drawString(  57, 1 , segundo_reg, 2, GRAPHICS_NORMAL );
    }
 
    else if (segundo==0){
@@ -454,4 +503,3 @@ void Reloj_Largada(void){
       bandera_limpiar=0;
    }
 }
-

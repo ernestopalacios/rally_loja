@@ -4,16 +4,16 @@
 		"selected_items":
 		[
 			[
-				"band",
+				"bandera",
 				"bandera_IGUALAR_RTC"
+			],
+			[
+				"band",
+				"bandera_igualar_desde_rtc"
 			],
 			[
 				"bande",
 				"bandera_IGUALAR_RTC"
-			],
-			[
-				"bandera",
-				"bandera_IGUALAR_GPS"
 			],
 			[
 				"draw",
@@ -311,33 +311,17 @@
 			"file": "rally_loja.ino",
 			"settings":
 			{
-				"buffer_size": 15130,
+				"buffer_size": 14162,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"contents": "***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nSe espera trama del GPS\nSE OBTUVO TRAMA GPS !!!\nHORA DEL RTC\n22:24:44\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nSe espera trama del GPS\n-------------\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nSe espera trama del GPS\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nSe espera trama del GPS\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nSe espera trama del GPS\nSE OBTUVO TRAMA GPS !!!\nHORA DEL RTC\n22:32:11\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nSe espera trama del GPS\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nSe espera trama del GPS\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nSe espera trama del GPS\n------------\nSE OBTUVO TRAMA GPS !!!\nHORA DEL RTC = 1\n22:35:13\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nEL RTC Esta igual\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nEL RTC Esta igual\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nEL RTC Esta igual\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nEL RTC Esta igual\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nEL RTC Esta igual\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nEL RTC Esta igual\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nEL RTC Esta igual\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nEL RTC Esta igual\n***   RALLY LOJA 2014   ***\nwww.kradac.com \nVersion 1.0.1 \nEL RTC Esta igual\n",
+			"contents": "RALLY LOJA 2014 \nwww.kradac.com \nVersion 1.0.0 \n2014/9/3 16:1:12\nRALLY LOJA 2014 \nwww.kradac.com \nVersion 1.0.0 \n2014/9/3 16:1:30\nRALLY LOJA 2014 \nwww.kradac.com \nVersion 1.0.0 \n2014/9/3 16:1:55\nRALLY LOJA 2014 \nwww.kradac.com \nVersion 1.0.0 \n2014/9/3 16:2:33\nRALLY LOJA 2014 \nwww.kradac.com \nVersion 1.0.0 \n2014/9/3 16:3:4\n",
 			"settings":
 			{
-				"buffer_size": 1552,
+				"buffer_size": 329,
 				"line_ending": "Windows",
-				"name": "Serial Monitor - COM10"
-			}
-		},
-		{
-			"file": "Programación SkyPatrol Rally.txt",
-			"settings":
-			{
-				"buffer_size": 174,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/C/Program Files (x86)/Arduino/libraries/RTClib/examples/ds1307/ds1307.ino",
-			"settings":
-			{
-				"buffer_size": 1862,
-				"line_ending": "Windows"
+				"name": "Serial Monitor - COM19"
 			}
 		},
 		{
@@ -405,8 +389,10 @@
 	],
 	"file_history":
 	[
-		"/C/Users/DELL/GIT/RTClib/RTClib.cpp",
+		"/C/Users/DELL/GIT/rally_loja/rally_loja.ino",
 		"/C/Users/DELL/GIT/rally_loja/Programación SkyPatrol Rally.txt",
+		"/C/Program Files (x86)/Arduino/libraries/RTClib/examples/ds1307/ds1307.ino",
+		"/C/Users/DELL/GIT/RTClib/RTClib.cpp",
 		"/C/Users/DELL/GIT/RTClib/examples/ds1307/ds1307.ino",
 		"/C/Program Files (x86)/Arduino/libraries/DS1307RTC/DS1307RTC.cpp",
 		"/C/Program Files (x86)/Arduino/libraries/RTClib/RTClib.cpp",
@@ -505,6 +491,9 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"bandera_IGUALAR_RTC",
+			"attachInterrupt",
+			"interrupts",
 			"bandera_limpiar",
 			"Ds1307SqwPinMode",
 			"second",
@@ -629,10 +618,7 @@
 			"'G'",
 			"Adv_Mot",
 			"AdvMot",
-			"while( ",
-			"ISR_Adv",
-			"setH",
-			"set_H"
+			"while( "
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -688,15 +674,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 15130,
+						"buffer_size": 14162,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3991,
-								3991
+								9916,
+								9916
 							]
 						],
 						"settings":
@@ -706,7 +692,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1633.0,
+						"translation.y": 4680.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -717,43 +703,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1552,
+						"buffer_size": 329,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1552,
-								1552
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 658.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "Programación SkyPatrol Rally.txt",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 174,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								15,
-								15
+								329,
+								329
 							]
 						],
 						"settings":
@@ -764,77 +722,17 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 1,
 					"type": "text"
 				}
 			]
 		},
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
-					"buffer": 0,
-					"file": "rally_loja.ino",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 15130,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2145,
-								2145
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Arduino-like IDE/Arduino.tmLanguage",
-							"tab_size": 3,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 980.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "/C/Program Files (x86)/Arduino/libraries/RTClib/examples/ds1307/ds1307.ino",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1862,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								916,
-								1088
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Arduino-like IDE/Arduino.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 454.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
+					"buffer": 2,
 					"file": "/C/Users/DELL/GIT/RTClib/RTClib.cpp",
 					"semi_transient": false,
 					"settings":
@@ -860,11 +758,41 @@
 						"translation.y": 897.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 0,
+					"file": "rally_loja.ino",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 14162,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								14162,
+								14162
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Arduino-like IDE/Arduino.tmLanguage",
+							"tab_size": 3,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 6.0,
+						"translation.y": 6526.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
 					"file": "/C/Users/DELL/GIT/RTClib/RTClib.h",
 					"semi_transient": false,
 					"settings":
@@ -890,7 +818,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 4,
 					"type": "text"
 				}
 			]
@@ -924,7 +852,7 @@
 		"cols":
 		[
 			0.0,
-			0.517120622568,
+			0.655679609108,
 			1.0
 		],
 		"rows":
@@ -948,7 +876,7 @@
 	},
 	"output.rally_loja":
 	{
-		"height": 192.0
+		"height": 73.0
 	},
 	"project": "SUBLIME_rally_loja.sublime-project",
 	"replace":
@@ -992,7 +920,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 244.0,
+	"side_bar_width": 103.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
